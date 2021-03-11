@@ -1,4 +1,6 @@
+__pycache__
+.vscode
+.DS_Store
 
-*/.DS_Store
-
-*/.pyc
+generated_tables/*
+html/*
