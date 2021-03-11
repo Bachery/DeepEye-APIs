@@ -330,6 +330,9 @@ class deepeye(object):
             print ('no chart generated')
             sys.exit(0)
         # print(instance.table_num, instance.view_num)
+
+        # instance.output_all_tables('generated_tables/')
+        
         return instance
 
     def learning_to_rank(self):

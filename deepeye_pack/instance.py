@@ -198,3 +198,8 @@ class Instance(object):
         self.views.sort(key=lambda view:self.tables[view.table_pos].views[view.view_pos].score,reverse=True)
         # for i in range(self.view_num):
         #     print("score[i], ", self.tables[self.views[i].table_pos].views[self.views[i].view_pos].score)
+
+    def output_all_tables(self, save_folder):
+        for idx, table in enumerate(self.tables):
+            if idx==0: continue
+            table.output_table(idx, save_folder)

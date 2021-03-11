@@ -15,14 +15,14 @@ dp = deepeye_pack.deepeye('demo') # the name here doesn't actually matter
 #The followings are test datasets
 #User can choose one to test
 
-# file = './datasets/FlyDelay_NewYork.csv'
+# file = './datasets/electricityConsumptionOfEasternChina.csv'
+# file = './datasets/FlightDelayStatistics2015.csv'
 # file = './datasets/Foreign Visitor Arrivals By Purpose(Jan-Dec 2015).csv'
+# file = './datasets/happinessRanking(2015-2016).csv'
 # file = './datasets/HollywoodsMostProfitableStories.csv'
 # file = './datasets/MostPopularBaby_Names(NewYork).csv'
-# file = './datasets/SummerOlympic_1896_2008.csv'
-# file = './datasets/electricityConsumptionOfEasternChina.csv'
-# file = './datasets/happinessRanking(2015-2016).csv'
-file = './datasets/titanicPassenger.csv'
+file = './datasets/SummerOlympic_1896_2008.csv'
+# file = './datasets/titanicPassenger.csv'
 
 #read the datasets
 dp.from_csv(file)
@@ -33,12 +33,14 @@ dp.from_csv(file)
 dp.partial_order()
 #dp.diversified_ranking()
 
+dp.instance.tables[0].output_table(0, '..')
+
 # output functions
 # can use several different methods at the same time
 
-dp.to_single_html()
-#dp.to_single_json()
-#dp.to_multiple_htmls()
+# dp.to_single_html()
+# dp.to_single_json()
+# dp.to_multiple_htmls()
 #dp.to_list()
 #dp.to_print_out()
 #dp.to_multiple_jsons()

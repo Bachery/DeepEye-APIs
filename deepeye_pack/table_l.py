@@ -145,12 +145,6 @@ class Table(object):
         f.bin_num = len(bins)
         f.interval = interval
 
-
-
-
-
-
-
     def generateViews(self):
         """
         Generate views according to the type of each column before dealing with table.
@@ -218,6 +212,7 @@ class Table(object):
 
                     fi = self.features[i]
                     fj = self.features[j]
+                    
                     if fi.type == Type.categorical and fj.type == Type.numerical and fi.ratio == 1.0:
                         charts = []
                         if fj.min != '' and fj.min > 0 and fi.distinct <= 5 and not (len(fj.name) >= 6 and fj.name[0:4] == 'AVG(' and fj.name[-1] == ')'): # AVG makes no sense in pie chart
@@ -286,8 +281,6 @@ class Table(object):
         self.instance.view_num += self.view_num
 
 
-
-
 # The following functions deal with different types of data and return new_table
 
     def dealWithGroup(self,column_id,begin,end):
@@ -350,9 +343,6 @@ class Table(object):
             new_table.D.sort(key=lambda l:l[-1])
         return new_table
 
-
-
-
     def dealWithIntervalBin(self,column_id,begin,end):
         """
         genarate a new table by operation "BIN BY $(interval)"
@@ -410,9 +400,6 @@ class Table(object):
         new_table.origins.extend([column_id, column_id])
         return new_table
 
-
-
-
     def dealWithHourBin(self,column_id,begin,end):
         """
         genarate a new table by operation "BIN BY HOUR"
@@ -459,9 +446,6 @@ class Table(object):
                 if new_table.D[i][1]:
                     new_table.D[i][j+1] = 1.0 * new_table.D[i][j] / new_table.D[i][1]
         return new_table
-
-
-
 
     def dealWithWeekBin(self,column_id,begin,end):
         """
@@ -512,10 +496,6 @@ class Table(object):
                     new_table.D[i][j+1] = 1.0 * new_table.D[i][j] / new_table.D[i][1]
         return new_table
 
-
-
-
-
     def dealWithPNBin(self,column_id,begin,end):
         """
         genarate a new table by operation "BIN BY ZERO"
@@ -543,9 +523,6 @@ class Table(object):
             else:
                 new_table.D[1][1] += 1
         return new_table
-
-
-
 
 
     def getClassifyTable(self, classify_id, x_id, f):
@@ -580,9 +557,6 @@ class Table(object):
             new_table.D.extend(f(x_id, begin_id, end_id).D)
             begin_id = end_id
         return new_table
-
-
-
 
     def dealWithTable(self):
         """
@@ -664,3 +638,11 @@ class Table(object):
                 if self.types[j] == Type.numerical and self.features[j].min != '' and self.features[j].min < 0:
                     new_tables.append(self.getClassifyTable(i, j, self.dealWithPNBin))
         return new_tables
+
+    def output_table(self, idx, save_folder):
+        import csv
+        save_name = save_folder + '/' + self.instance.table_name + '_' + str(idx) + '_' + self.describe + '.csv'
+        with open(save_name, 'w') as f:
+            writer = csv.writer(f)
+            writer.writerow(self.names)
+            writer.writerows(self.D)

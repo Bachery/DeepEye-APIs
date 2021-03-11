@@ -136,7 +136,6 @@ class Table(object):
         f.bin_num = len(bins)
         f.interval = 'TIME'
 
-
     def generateViews(self):
         """
         Generate views according to the type of each column before dealing with table.
@@ -289,6 +288,7 @@ class Table(object):
                     self.view_num+=1
 
         self.instance.view_num += self.view_num
+
 
 # The following functions deal with different types of data and return new_table
 
@@ -529,7 +529,6 @@ class Table(object):
                         new_table.D[i][j+1] = 1.0 * new_table.D[i][j] / new_table.D[i][1]
         return new_table
 
-
     def dealWithPNBin(self,column_id,begin,end,get_head,get_data):
         """
         genarate a new table by operation "BIN BY ZERO"
@@ -656,6 +655,7 @@ class Table(object):
             for j in range(self.column_num):
                 if i == j:
                     continue
+                
                 if (self.types[j] == Type.categorical and self.features[j].distinct <= 20) or self.types[j] == Type.temporal:
                     s = set()
                     for k in range(self.tuple_num):
@@ -677,3 +677,11 @@ class Table(object):
                     new_tables.append(self.getClassifyTable(i, j, self.dealWithPNBin, True))
 
         return new_tables
+
+    def output_table(self, idx, save_folder):
+        import csv
+        save_name = save_folder + '/' + self.instance.table_name + '_' + str(idx) + '_' + self.describe + '.csv'
+        with open(save_name, 'w') as f:
+            writer = csv.writer(f)
+            writer.writerow(self.names)
+            writer.writerows(self.D)
