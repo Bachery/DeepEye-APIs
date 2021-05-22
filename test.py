@@ -57,6 +57,7 @@ import deepeye_pack
 # file = './datasets/HollywoodsMostProfitableStories.csv'
 # file = './datasets/MostPopularBaby_Names(NewYork).csv'
 # file = './datasets/SummerOlympic_1896_2008.csv'
+file = './datasets/SummerOlympic.csv'
 # file = './datasets/titanicPassenger.csv'
 dp = deepeye_pack.deepeye('demo')
 dp.from_csv(file)
@@ -69,7 +70,7 @@ with open('DeepEye_figs/' + name, 'wb') as f:
     pickle.dump(all_figs, f)
 
 # %%
-for fig in all_figs[:10]:
+for fig in all_figs[:20]:
     fig.show()
 # all_figs[-5].show()
 # %%
