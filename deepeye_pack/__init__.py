@@ -958,11 +958,30 @@ class deepeye(object):
             all_data.append(data)
         all_data = sorted(all_data, key=lambda x: x['order'])
         
+        def generate_title(x, y, trans=[], c = None):
+            title = "xxx"
+            if c is None:
+                if len(trans)==1 and trans[0] in ['MEAN', 'SUM']:
+                    title = '{} of {} on {}'.format(trans[0], y, x)
+                elif y == 'count':
+                    title = 'COUNTS of {}'.format(x)
+                else:
+                    title = '{} on {}'.format(y, x)
+
+            else:
+                if len(trans)==1 and trans[0] in ['MEAN', 'SUM']:
+                    title = '{} of {} on {}, grouped by {}'.format(trans[0], y, x, c)
+                else:
+                    title = '{} on {}, grouped by {}'.format(y, x, c)
+            return title
+
         import plotly.express as px
         import plotly.graph_objects as go
-        import pickle
         all_figs = []
         for data in all_data:
+            if data['y_name'].startswith('SUM'): data['y_name'] = 'SUM of ' + data['y_name'][4:-1]
+            if data['y_name'].startswith('AVG'): data['y_name'] = 'MEAN of ' + data['y_name'][4:-1]
+            if data['y_name'].startswith('CNT'): data['y_name'] = 'count'
             if not data["classify"]:
                 attr = data["x_data"][0] # 横坐标
                 val = data["y_data"][0] # 纵坐标
@@ -970,6 +989,7 @@ class deepeye(object):
                 elif data['chart'] == 'line':       fig = px.line(x=attr, y=val)
                 elif data['chart'] == 'pie':        fig = px.pie(names=attr, values=val)
                 elif data['chart'] == 'scatter':    fig = px.scatter(x=attr, y=val)
+                anno_ypos = 1.07
             else:
                 attr = data["x_data"][0]
                 fig = go.Figure()
@@ -984,4 +1004,21 @@ class deepeye(object):
                         print('no possible')
                     elif data['chart'] == 'scatter':
                         fig.add_trace(go.Scatter(x=attr, y=val, mode='markers', name=name))
+                if data['chart'] == 'bar':
+                    fig.update_layout(barmode='stack')
+                anno_ypos = 1.1
+            
+            title = generate_title(x=data['x_name'], y=data['y_name'])
+            fig.update_layout(xaxis_title=data['x_name'], yaxis_title=data['y_name'], title=title)
+            
+            fig.add_annotation(
+                xref="x domain",
+                yref="y domain",
+                x=0.5,	# The arrow head will be 25% along the x axis, starting from the left
+                y=anno_ypos,	# The arrow head will be 40% along the y axis, starting from the bottom
+                text = data['describe'],
+                showarrow=False
+            )
+            
             all_figs.append(fig)
+        return all_figs
