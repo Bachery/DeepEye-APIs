@@ -932,3 +932,56 @@ class deepeye(object):
                 page.add(chart)
         return page
         
+    def output_plotly(self):
+        instance = self.instance
+        order1 = order2 = 1
+        old_view = ''
+        all_data = []
+        for i in range(instance.view_num):
+            view = instance.tables[instance.views[i].table_pos].views[instance.views[i].view_pos]
+            if old_view:
+                order2 = 1
+                order1 += 1
+            old_view = view
+            # self.html_output(order1, view, 'single')
+            data = {}
+            data['order'] = order1
+            data['chartname'] = instance.table_name
+            data['describe'] = view.table.describe
+            data['x_name'] = view.fx.name
+            data['y_name'] = view.fy.name
+            data['chart'] = Chart.chart[view.chart]
+            data['classify'] = [v[0] for v in view.table.classes]
+            data['x_data'] = view.X
+            data['y_data'] = view.Y
+            data['title_top'] = 5
+            all_data.append(data)
+        all_data = sorted(all_data, key=lambda x: x['order'])
+        
+        import plotly.express as px
+        import plotly.graph_objects as go
+        import pickle
+        all_figs = []
+        for data in all_data:
+            if not data["classify"]:
+                attr = data["x_data"][0] # 横坐标
+                val = data["y_data"][0] # 纵坐标
+                if data['chart'] == 'bar':          fig = px.bar(x=attr, y=val)
+                elif data['chart'] == 'line':       fig = px.line(x=attr, y=val)
+                elif data['chart'] == 'pie':        fig = px.pie(names=attr, values=val)
+                elif data['chart'] == 'scatter':    fig = px.scatter(x=attr, y=val)
+            else:
+                attr = data["x_data"][0]
+                fig = go.Figure()
+                for i in range(len(data["classify"])):
+                    val = data["y_data"][i] # 每组纵坐标的值
+                    name = (data["classify"][i][0] if type(data["classify"][i]) == type(('a','b')) else data["classify"][i])
+                    if data['chart'] == 'bar':
+                        fig.add_trace(go.Bar(x=attr, y=val, name=name))
+                    elif data['chart'] == 'line':
+                        fig.add_trace(go.Scatter(x=attr, y=val, mode='lines', name=name))
+                    elif data['chart'] == 'pie':
+                        print('no possible')
+                    elif data['chart'] == 'scatter':
+                        fig.add_trace(go.Scatter(x=attr, y=val, mode='markers', name=name))
+            all_figs.append(fig)

@@ -685,3 +685,4 @@ class Table(object):
             writer = csv.writer(f)
             writer.writerow(self.names)
             writer.writerows(self.D)
+

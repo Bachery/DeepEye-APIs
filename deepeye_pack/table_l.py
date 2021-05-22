@@ -592,7 +592,8 @@ class Table(object):
                 new_tables.append(self.dealWithPNBin(i,0,self.tuple_num))
 
         for i in range(self.column_num):
-            if self.types[i] != Type.categorical or self.features[i].distinct > 5:
+            # if self.types[i] != Type.categorical or self.features[i].distinct > 5:
+            if self.types[i] != Type.categorical or self.features[i].distinct > 6:  # 改成和Table类一样的限制
                 continue
             self.D.sort(key=lambda tuple:tuple[i])
             new_table = Table(self.instance, True, 'GROUP BY ' + self.names[i], '')
@@ -646,3 +647,4 @@ class Table(object):
             writer = csv.writer(f)
             writer.writerow(self.names)
             writer.writerows(self.D)
+
